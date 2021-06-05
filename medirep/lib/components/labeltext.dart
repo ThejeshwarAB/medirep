@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'constants.dart';
 
-class NormalText extends StatelessWidget {
+class LabelText extends StatelessWidget {
   final text;
-  NormalText(this.text);
+  LabelText(this.text);
   @override
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: TextStyle(fontSize: no15, fontWeight: bold, color: purewhite),
+      style: TextStyle(fontSize: no15, fontWeight: bold, color: black),
       overflow: TextOverflow.ellipsis,
-      maxLines: 2,
+      maxLines: 1,
     );
   }
 }

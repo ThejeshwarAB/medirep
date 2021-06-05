@@ -4,19 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:medirep/components/constants.dart';
 import 'package:medirep/components/headertext.dart';
 import 'package:medirep/components/normaltext.dart';
+import 'package:medirep/components/regulartext.dart';
 import 'package:medirep/components/specialtext.dart';
 import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
 import 'package:medirep/views/oops.dart';
-import 'package:medirep/views/userdash.dart';
 
-class ViewPdf extends StatefulWidget {
+class About extends StatefulWidget {
   final FirebaseUser user;
-  ViewPdf(this.user);
+  About({this.user});
   @override
-  _ViewPdfState createState() => _ViewPdfState();
+  _AboutState createState() => _AboutState();
 }
 
-class _ViewPdfState extends State<ViewPdf> {
+class _AboutState extends State<About> {
   PDFDocument document;
   bool _loaded = false;
 
@@ -28,7 +28,7 @@ class _ViewPdfState extends State<ViewPdf> {
 
   void _loadPdf() async {
     print("Pdf loaded");
-    document = await PDFDocument.fromAsset('assets/files/info.pdf');
+    document = await PDFDocument.fromAsset('assets/files/about.pdf');
     setState(() {
       _loaded = true;
     });
@@ -79,11 +79,7 @@ class _ViewPdfState extends State<ViewPdf> {
                   ),
                   leading: new IconButton(
                     icon: new Icon(Icons.arrow_back_ios),
-                    onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => UserDash(widget.user)),
-                    ),
+                    onPressed: () => Navigator.of(context).pop(),
                   )),
               backgroundColor: Colors.transparent,
               body: Center(
@@ -93,8 +89,8 @@ class _ViewPdfState extends State<ViewPdf> {
                   children: <Widget>[
                     // SizedBox(height: no20),
                     // HeaderText("medirep"),
-                    // SizedBox(height: no10),
-                    SpecialText("view intructions pdf"),
+                    // SizedBox(height: 10),
+                    SpecialText("about us"),
                     SizedBox(height: no10),
                     Container(
                         height: size.height * 0.8,
@@ -115,9 +111,11 @@ class _ViewPdfState extends State<ViewPdf> {
                                     )
                                   : NormalText("Please wait..."),
                               padding: EdgeInsets.all(no10),
-                              color: Colors.red[500],
+                              color: red,
                             ))),
-                    SizedBox(height: no20),
+                    SizedBox(height: no10),
+                    RegularText("app developed by ThejeshwarAB©"),
+                    SizedBox(height: no10),
                   ],
                 ),
               ))),

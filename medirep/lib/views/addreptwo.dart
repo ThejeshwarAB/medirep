@@ -1,11 +1,13 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:medirep/components/constants.dart';
+import 'package:medirep/components/headertext.dart';
 import 'package:medirep/components/normaltext.dart';
 import 'package:medirep/components/specialtext.dart';
-import 'package:medirep/components/topbar.dart';
 import 'package:medirep/model/data.dart';
+import 'package:medirep/views/oops.dart';
 import 'package:medirep/views/userdash.dart';
 import 'package:flutter/cupertino.dart';
 // import 'package:medirep/views/AddRepTwodash.dart';
@@ -27,7 +29,7 @@ class _AddRepTwoState extends State<AddRepTwo> {
   Map<String, dynamic> _mapValue = new Map();
 
   @override
-  void initState() { 
+  void initState() {
     super.initState();
     _mapValue = widget._mapValue;
     print(_mapValue);
@@ -60,7 +62,7 @@ class _AddRepTwoState extends State<AddRepTwo> {
     );
     if (newTime1 != null) {
       setState(() {
-       _date1 = newTime1;
+        _date1 = newTime1;
       });
     }
   }
@@ -74,12 +76,12 @@ class _AddRepTwoState extends State<AddRepTwo> {
     );
     if (newTime2 != null) {
       setState(() {
-       _date2 = newTime2;
+        _date2 = newTime2;
       });
     }
   }
 
-String _reaction = "recovered";
+  String _reaction = "recovered";
   final _reactions = [
     "recovered",
     "admitted in hospital",
@@ -93,7 +95,7 @@ String _reaction = "recovered";
     "unknown",
   ];
 
-Future<void> makeAsMap() {
+  Future<void> makeAsMap() {
     // _mapValue = {
     //   "reaction": DateFormat('dd-MM-yyyy').format(_date1),
     //   "recovery": DateFormat('dd-MM-yyyy').format(_date2),
@@ -111,8 +113,25 @@ Future<void> makeAsMap() {
     return null;
   }
 
+  var connected = true;
+
+  Future<void> checkConnection() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      setState(() {
+        connected = true;
+      });
+    } else {
+      setState(() {
+        connected = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    checkConnection();
     var size = MediaQuery.of(context).size;
 
     return Container(
@@ -122,267 +141,292 @@ Future<void> makeAsMap() {
           fit: BoxFit.cover,
         ),
       ),
-      child: Scaffold(
-        key: _scaffoldKey,
-          // extendBodyBehindAppBar: true,
-          appBar: TopBar.getAppBar(),
-          backgroundColor: Colors.transparent,
-          body: Container(
-            height: size.height,
-            width: double.infinity,
-            child: Center(
-                child: SingleChildScrollView(
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    // SizedBox(height: 20),
-                    // HeaderText("medirep"),
-                    // SizedBox(height: 20),
-                    SpecialText("add medical observations"),
-                    SizedBox(height: 20),
-                    // SpecialText("date of reaction: " +
-                    //     DateFormat('dd-MM-yyyy').format(_time)),
-                    Container(
-                                      color: black,
-                                      width: size.width * 0.25,
-                                      height: 1,
-                                    ),
-                                    SizedBox(height: 20),
-                    Row(
+      child: !connected
+          ? Oops()
+          : Scaffold(
+              key: _scaffoldKey,
+              // extendBodyBehindAppBar: true,
+              appBar: AppBar(
+                  backgroundColor: Colors.transparent,
+                  title: HeaderText(
+                    "medirep",
+                  ),
+                  centerTitle: true,
+                  elevation: 0,
+                  iconTheme: IconThemeData(
+                    color: Colors.black,
+                  ),
+                  leading: new IconButton(
+                    icon: new Icon(Icons.arrow_back_ios),
+                    onPressed: () => Navigator.of(context).pop(),
+                  )),
+              backgroundColor: Colors.transparent,
+              body: Container(
+                height: size.height,
+                width: double.infinity,
+                child: Center(
+                    child: SingleChildScrollView(
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SpecialText("date of reaction: "),
+                      children: <Widget>[
+                        // SizedBox(height: no20),
+                        // HeaderText("medirep"),
+                        // SizedBox(height: no20),
+                        SpecialText("add medical observations"),
+                        SizedBox(height: no10),
+                        // SpecialText("date of reaction: " +
+                        //     DateFormat('dd-MM-yyyy').format(_time)),
                         Container(
-                            width: size.width * 0.35,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(40),
-                              child: FlatButton(
-                                  color: red,
-                                  padding: EdgeInsets.all(20),
-                                  onPressed: _chooseTimeOne,
-                                  child: NormalText(
-                                    DateFormat('dd-MM-yyyy').format(_date1),
-                                  )),
-                            )),
-                      ],
-                    ),
-                        SizedBox(height: 20),
-                    // SpecialText("date of recovery: " +
-                    //     DateFormat('dd-MM-yyyy').format(_time)),
-                    // SizedBox(height: 20),
-                     Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SpecialText("date of recovery: "),
-                        Container(
-                            width: size.width * 0.35,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(40),
-                              child: FlatButton(
-                                  color: red,
-                                  padding: EdgeInsets.all(20),
-                                  onPressed: _chooseTimeTwo,
-                                  child: NormalText(
-                                    DateFormat('dd-MM-yyyy').format(_date2),
-                                  )),
-                            )),
-                      ],
-                    ),
+                          color: black,
+                          width: size.width * 0.25,
+                          height: 1,
+                        ),
+                        SizedBox(height: no10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SpecialText("date of reaction: "),
+                            Container(
+                                width: size.width * 0.35,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(no40),
+                                  child: FlatButton(
+                                      color: red,
+                                      padding: EdgeInsets.all(no20),
+                                      onPressed: _chooseTimeOne,
+                                      child: NormalText(
+                                        DateFormat('dd-MM-yyyy').format(_date1),
+                                      )),
+                                )),
+                          ],
+                        ),
+                        SizedBox(height: no10),
+                        // SpecialText("date of recovery: " +
+                        //     DateFormat('dd-MM-yyyy').format(_time)),
+                        // SizedBox(height: no20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SpecialText("date of recovery: "),
+                            Container(
+                                width: size.width * 0.35,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(no40),
+                                  child: FlatButton(
+                                      color: red,
+                                      padding: EdgeInsets.all(no20),
+                                      onPressed: _chooseTimeTwo,
+                                      child: NormalText(
+                                        DateFormat('dd-MM-yyyy').format(_date2),
+                                      )),
+                                )),
+                          ],
+                        ),
 
-                   SizedBox(height:20),
-                    Container(
-                      width: size.width * .8,
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(40),
-                          child: TextFormField(
-                              controller: _medicationController,
-                              maxLines: 3,
-                              validator: (value) => _validate(value),
-                              // controller: _nameController,
-                              // validator: (value) =>
-                              //     _validateName(value),
-                              style: TextStyle(
-                                  color: pureblack,
-                                  fontWeight: bold,
-                                  fontSize: 15),
-                              decoration: InputDecoration(
-                                  alignLabelWithHint: true,
-                                  errorStyle: TextStyle(
-                                      color: Colors.red,
+                        SizedBox(height: no10),
+                        Container(
+                          width: size.width * .8,
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.circular(no40),
+                              child: TextFormField(
+                                  controller: _medicationController,
+                                  maxLines: 3,
+                                  validator: (value) => _validate(value),
+                                  // controller: _nameController,
+                                  // validator: (value) =>
+                                  //     _validateName(value),
+                                  style: TextStyle(
+                                      color: pureblack,
                                       fontWeight: bold,
-                                      fontSize: 15),
-                                  fillColor: white,
-                                  filled: true,
-                                  labelText: ("suspected medication(s)"),
-                                  labelStyle: TextStyle(
-                                      color: black,
-                                      fontWeight: bold,
-                                      fontSize: 15)))),
-                    ),
-                    SizedBox(height: 20),
-                    Container(
-                      width: size.width * 0.8,
-                      alignment: Alignment.center,
-                      // mainaxisalignment: MainAxisAlignment.center,
-                      // height: size.height * 0.1,
-                      // decoration: BoxDecoration(color: white),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SpecialText("severity:"),
-                          SizedBox(width: 20),
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(40),
-                            child: Container(
-                              padding: EdgeInsets.fromLTRB(20, 0, 10, 0),
-                              color: white,
-                              child: DropdownButton(
-                                focusColor: white,
-                                icon: Icon(Icons.arrow_drop_down),
-                                iconEnabledColor: red,
-                                iconSize: 30,
-                                items: _reactions
-                                    .map((String item) => DropdownMenuItem<String>(
-                                        child: Text(
-                                          item,
-                                          style: TextStyle(
-                                              color: black,
-                                              fontWeight: bold,
-                                              fontSize: 15),
-                                        ),
-                                        value: item))
-                                    .toList(),
-                                onChanged: (String value) {
-                                  setState(() {
-                                    //  print("previous ${this._designation}");
-                                    //  print("selected $value");
-                                    _reaction = value;
-                                  });
-                                },
-                                value: _reaction,
+                                      fontSize: no15),
+                                  decoration: InputDecoration(
+                                      alignLabelWithHint: true,
+                                      errorStyle: TextStyle(
+                                          color: Colors.red,
+                                          fontWeight: bold,
+                                          fontSize: no15),
+                                      fillColor: white,
+                                      filled: true,
+                                      labelText: ("suspected medication(s)"),
+                                      labelStyle: TextStyle(
+                                          color: black,
+                                          fontWeight: bold,
+                                          fontSize: no15)))),
+                        ),
+                        SizedBox(height: no10),
+                        Container(
+                          width: size.width * 0.8,
+                          alignment: Alignment.center,
+                          // mainaxisalignment: MainAxisAlignment.center,
+                          // height: size.height * 0.1,
+                          // decoration: BoxDecoration(color: white),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SpecialText("severity:"),
+                              SizedBox(width: no20),
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(no40),
+                                child: Container(
+                                  padding:
+                                      EdgeInsets.fromLTRB(no20, 0, no10, 0),
+                                  color: white,
+                                  child: DropdownButton(
+                                    focusColor: white,
+                                    icon: Icon(Icons.arrow_drop_down),
+                                    iconEnabledColor: red,
+                                    iconSize: 30,
+                                    items: _reactions
+                                        .map((String item) =>
+                                            DropdownMenuItem<String>(
+                                                child: Text(
+                                                  item,
+                                                  style: TextStyle(
+                                                      color: black,
+                                                      fontWeight: bold,
+                                                      fontSize: no15),
+                                                ),
+                                                value: item))
+                                        .toList(),
+                                    onChanged: (String value) {
+                                      setState(() {
+                                        //  print("previous ${this._designation}");
+                                        //  print("selected $value");
+                                        _reaction = value;
+                                      });
+                                    },
+                                    value: _reaction,
+                                  ),
+                                ),
                               ),
-                            ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    Container(
-                      width: size.width * 0.8,
-                      alignment: Alignment.center,
-                      // mainaxisalignment: MainAxisAlignment.center,
-                      // height: size.height * 0.1,
-                      // decoration: BoxDecoration(color: white),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SpecialText("outcome obsvd:"),
-                          SizedBox(width: 20),
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(40),
-                            child: Container(
-                              padding: EdgeInsets.fromLTRB(20, 0, 10, 0),
-                              color: white,
-                              child: DropdownButton(
-                                focusColor: white,
-                                icon: Icon(Icons.arrow_drop_down),
-                                iconEnabledColor: red,
-                                iconSize: 30,
-                                items: _outcomes
-                                    .map((String item) => DropdownMenuItem<String>(
-                                        child: Text(
-                                          item,
-                                          style: TextStyle(
-                                              color: black,
-                                              fontWeight: bold,
-                                              fontSize: 15),
-                                        ),
-                                        value: item))
-                                    .toList(),
-                                onChanged: (String value) {
-                                  setState(() {
-                                    //  print("previous ${this._designation}");
-                                    //  print("selected $value");
-                                    _outcome = value;
-                                  });
-                                },
-                                value: _outcome,
+                        ),
+                        SizedBox(height: no10),
+                        Container(
+                          width: size.width * 0.8,
+                          alignment: Alignment.center,
+                          // mainaxisalignment: MainAxisAlignment.center,
+                          // height: size.height * 0.1,
+                          // decoration: BoxDecoration(color: white),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SpecialText("outcome obsvd:"),
+                              SizedBox(width: no20),
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(no40),
+                                child: Container(
+                                  padding:
+                                      EdgeInsets.fromLTRB(no20, 0, no10, 0),
+                                  color: white,
+                                  child: DropdownButton(
+                                    focusColor: white,
+                                    icon: Icon(Icons.arrow_drop_down),
+                                    iconEnabledColor: red,
+                                    iconSize: 30,
+                                    items: _outcomes
+                                        .map((String item) =>
+                                            DropdownMenuItem<String>(
+                                                child: Text(
+                                                  item,
+                                                  style: TextStyle(
+                                                      color: black,
+                                                      fontWeight: bold,
+                                                      fontSize: no15),
+                                                ),
+                                                value: item))
+                                        .toList(),
+                                    onChanged: (String value) {
+                                      setState(() {
+                                        //  print("previous ${this._designation}");
+                                        //  print("selected $value");
+                                        _outcome = value;
+                                      });
+                                    },
+                                    value: _outcome,
+                                  ),
+                                ),
                               ),
-                            ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height:20),
-                    
-                     Container(
-                      width: size.width * .8,
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(40),
-                          child: TextFormField(
-                              controller: _additionalController,
-                              // maxLines: 3,
-                              validator: (value) => _validate(value),
-                              // controller: _nameController,
-                              // validator: (value) =>
-                              //     _validateName(value),
-                              style: TextStyle(
-                                  color: pureblack,
-                                  fontWeight: bold,
-                                  fontSize: 15),
-                              decoration: InputDecoration(
-                                  // alignLabelWithHint: true,
-                                  errorStyle: TextStyle(
-                                      color: Colors.red,
+                        ),
+                        SizedBox(height: no10),
+
+                        Container(
+                          width: size.width * .8,
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.circular(no40),
+                              child: TextFormField(
+                                  controller: _additionalController,
+                                  // maxLines: 3,
+                                  validator: (value) => _validate(value),
+                                  // controller: _nameController,
+                                  // validator: (value) =>
+                                  //     _validateName(value),
+                                  style: TextStyle(
+                                      color: pureblack,
                                       fontWeight: bold,
-                                      fontSize: 15),
-                                  fillColor: white,
-                                  filled: true,
-                                  labelText: ("additional information"),
-                                  labelStyle: TextStyle(
-                                      color: black,
-                                      fontWeight: bold,
-                                      fontSize: 15)))),
+                                      fontSize: no15),
+                                  decoration: InputDecoration(
+                                      // alignLabelWithHint: true,
+                                      errorStyle: TextStyle(
+                                          color: Colors.red,
+                                          fontWeight: bold,
+                                          fontSize: no15),
+                                      fillColor: white,
+                                      filled: true,
+                                      labelText: ("additional information"),
+                                      labelStyle: TextStyle(
+                                          color: black,
+                                          fontWeight: bold,
+                                          fontSize: no15)))),
+                        ),
+                        SizedBox(height: no10),
+                        Container(
+                            width: size.width * .8,
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(no40),
+                                child: FlatButton(
+                                  onPressed: () async {
+                                    if (_formKey.currentState.validate()) {
+                                      await makeAsMap();
+                                      // await addReportData(_mapValue);
+                                      await addReportData(_mapValue);
+                                      // Navigator.push(
+                                      //   context,
+                                      //   MaterialPageRoute(
+                                      //       builder: (context) => UserDash(widget.user)),
+                                      print("adding report");
+                                      var snackBar = SnackBar(
+                                        content:
+                                            Text("report added successfully"),
+                                        duration: Duration(seconds: 3),
+                                      );
+                                      _scaffoldKey.currentState
+                                          .showSnackBar(snackBar);
+                                      await Future.delayed(
+                                          Duration(seconds: 2));
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                UserDash(widget.user)),
+                                      );
+                                    }
+                                  },
+                                  child: NormalText("ADD MEDICAL REPORT"),
+                                  padding: EdgeInsets.all(no20),
+                                  color: Colors.red[500],
+                                ))),
+                        SizedBox(height: no10),
+                      ],
                     ),
-                    SizedBox(height:20),
-                    Container(
-                        width: size.width * .8,
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(40),
-                            child: FlatButton(
-                              onPressed: () async {
-                                if (_formKey.currentState.validate()) {
-                                  await makeAsMap();
-                                  // await addReportData(_mapValue);
-                                  await addReportData(_mapValue);
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(
-                                  //       builder: (context) => UserDash(widget.user)),
-                                  print("adding report");
-                                  var snackBar = SnackBar(content: Text("report added successfully"), duration: Duration(seconds: 3),);
-                                  _scaffoldKey.currentState.showSnackBar( snackBar );
-                                  await Future.delayed(Duration(seconds: 2));
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            UserDash(widget.user)),
-                                  );
-                                }
-                              },
-                              child: NormalText("ADD MEDICAL REPORT"),
-                              padding: EdgeInsets.all(20),
-                              color: Colors.red[500],
-                            ))),
-                    SizedBox(height: 20),
-                  ],
-                ),
-              ),
-            )),
-          )),
+                  ),
+                )),
+              )),
     );
   }
 }

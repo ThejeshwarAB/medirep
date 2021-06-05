@@ -7,7 +7,7 @@ class HeaderText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(text,
-        style: TextStyle(fontSize: 40, fontWeight: bold));
+    return Text(text.toLowerCase(),
+        style: TextStyle(fontSize: no30, fontWeight: bold, color: red));
   }
 }
