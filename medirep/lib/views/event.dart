@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:medirep/components/constants.dart';
 import 'package:medirep/components/headertext.dart';
 import 'package:medirep/components/labeltext.dart';
@@ -83,7 +82,7 @@ class _EventState extends State<Event> {
                     child: StreamBuilder(
                         stream: Firestore.instance
                             .collection('events')
-                            .orderBy('timestamp', descending: false)
+                            .orderBy('timestamp', descending: true)
                             .snapshots(),
                         builder: (BuildContext context,
                             AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -159,14 +158,14 @@ class _EventState extends State<Event> {
                                                   children: [
                                                     SpecialText(
                                                         document['name']),
-                                                    RegularText("(added " +
-                                                        DateFormat(
-                                                                'dd.MM.yyyy – kk:mm a')
-                                                            .format(document[
-                                                                    "timestamp"]
-                                                                .toDate())
-                                                            .toString() +
-                                                        ")"),
+                                                    // RegularText("(added " +
+                                                    //     DateFormat(
+                                                    //             'dd.MM.yyyy – kk:mm a')
+                                                    //         .format(document[
+                                                    //                 "timestamp"]
+                                                    //             .toDate())
+                                                    //         .toString() +
+                                                    //     ")"),
                                                     Row(
                                                       mainAxisAlignment:
                                                           MainAxisAlignment

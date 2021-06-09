@@ -87,7 +87,7 @@ class _ReportState extends State<Report> {
                     child: StreamBuilder(
                         stream: Firestore.instance
                             .collection('reports')
-                            .orderBy('timestamp', descending: false)
+                            .orderBy('timestamp', descending: true)
                             .snapshots(),
                         builder: (BuildContext context,
                             AsyncSnapshot<QuerySnapshot> snapshot) {
